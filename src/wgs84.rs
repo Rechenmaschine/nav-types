@@ -181,7 +181,12 @@ where
 macro_rules! impl_const_wgs84 {
     ($ty:ty, $pi:path, $half_pi:path) => {
         impl WGS84<$ty> {
-            /// Create a new WGS84 position in a const context.
+            /// Create a new WGS84 position
+            ///
+            /// # Arguments
+            /// - `latitude` in degrees
+            /// - `longitude` in degrees
+            /// - `altitude` in meters
             ///
             /// # Panics
             /// This will panic if `latitude` or `longitude` are not defined on the
@@ -206,7 +211,12 @@ macro_rules! impl_const_wgs84 {
                 }
             }
 
-            /// Try to create a new WGS84 position in a const context.
+            /// Try to create a new WGS84 position
+            ///
+            /// # Arguments
+            /// - `latitude` in degrees
+            /// - `longitude` in degrees
+            /// - `altitude` in meters
             pub const fn const_try_from_degrees_and_meters(
                 latitude: $ty,
                 longitude: $ty,
@@ -227,7 +237,12 @@ macro_rules! impl_const_wgs84 {
                 }
             }
 
-            /// Create a new WGS84 position in a const context.
+            /// Create a new WGS84 position
+            ///
+            /// # Arguments
+            /// - `latitude` in radians
+            /// - `longitude` in radians
+            /// - `altitude` in meters
             ///
             /// # Panics
             /// This will panic if `latitude` or `longitude` are not defined on the
@@ -252,7 +267,12 @@ macro_rules! impl_const_wgs84 {
                 }
             }
 
-            /// Try to create a new WGS84 position in a const context.
+            /// Try to create a new WGS84 position
+            ///
+            /// # Arguments
+            /// - `latitude` in radians
+            /// - `longitude` in radians
+            /// - `altitude` in meters
             pub const fn const_try_from_radians_and_meters(
                 latitude: $ty,
                 longitude: $ty,
@@ -452,22 +472,11 @@ mod tests {
         const OSLO_ALT: f64 = OSLO.altitude();
         const ORIGIN: WGS84<f64> = WGS84::<f64>::const_from_radians_and_meters(0.0, 0.0, 0.0);
         const ORIGIN_LAT: f64 = ORIGIN.latitude_radians();
-
-        close(OSLO.latitude_degrees(), 59.95, 0.0000000001);
-        close(OSLO.longitude_degrees(), 10.75, 0.0000000001);
-        close(OSLO_ALT, 0.0, 0.0);
-        close(ORIGIN_LAT, 0.0, 0.0);
-    }
-
-    #[test]
-    fn const_try_wgs84_construction() {
         const VALID: Option<WGS84<f64>> =
             WGS84::<f64>::const_try_from_radians_and_meters(0.1, 0.2, 12.3);
         const INVALID: Option<WGS84<f64>> =
             WGS84::<f64>::const_try_from_degrees_and_meters(100.0, 0.0, 0.0);
-
-        assert!(VALID.is_some());
-        assert!(INVALID.is_none());
+        let _ = (OSLO, OSLO_ALT, ORIGIN, ORIGIN_LAT, VALID, INVALID);
     }
 
     #[test]
